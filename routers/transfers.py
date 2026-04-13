@@ -32,8 +32,8 @@ def transfer_funds(transfer: schemas.TransactionCreate, db: Session = Depends(ge
 
     # Create a transaction record
     transaction = models.Transaction(
-        sender_id=sender.id,
-        receiver_id=receiver.id,
+        from_account_id=transfer.from_account_id,
+        to_account_id=transfer.to_account_id,
         amount=transfer.amount
     )
     db.add(transaction)
