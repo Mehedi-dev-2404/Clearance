@@ -17,8 +17,8 @@ def get_db():
 def transfer_funds(transfer: schemas.TransactionCreate, db: Session = Depends(get_db)):
     # Fetch sender and receiver accounts
     sender = db.query(models.Account).filter(models.Account.account_id
- == transfer.sender_id).first()
-    receiver = db.query(models.Account).filter(models.Account.account_id == transfer.receiver_id).first()
+ == transfer.from_account_id).first()
+    receiver = db.query(models.Account).filter(models.Account.account_id == transfer.to_account_id).first()
 
     if not sender or not receiver:
         raise HTTPException(status_code=404, detail="Sender or receiver account not found")
