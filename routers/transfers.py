@@ -1,4 +1,3 @@
-# Your /transfer endpoints
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from database import SessionLocal
@@ -15,9 +14,7 @@ def get_db():
 
 @router.post("/transfer")
 def transfer_funds(transfer: schemas.TransactionCreate, db: Session = Depends(get_db)):
-    # Fetch sender and receiver accounts
-    sender = db.query(models.Account).filter(models.Account.account_id
- == transfer.from_account_id).first()
+    sender = db.query(models.Account).filter(models.Account.account_id == transfer.from_account_id).first()
     receiver = db.query(models.Account).filter(models.Account.account_id == transfer.to_account_id).first()
 
     if not sender or not receiver:
@@ -26,18 +23,17 @@ def transfer_funds(transfer: schemas.TransactionCreate, db: Session = Depends(ge
     if sender.balance < transfer.amount:
         raise HTTPException(status_code=400, detail="Insufficient funds")
 
-    # Perform the transfer
     sender.balance -= transfer.amount
     receiver.balance += transfer.amount
 
-    # Create a transaction record
     transaction = models.Transaction(
         from_account_id=transfer.from_account_id,
         to_account_id=transfer.to_account_id,
-        amount=transfer.amount
+        amount=transfer.amount,
+        status="pending"
     )
     db.add(transaction)
     db.commit()
     db.refresh(transaction)
 
-    return {"transaction_id": transaction.id, "status": "success"}
+    return {"transaction_id": transaction.transaction_id, "status": "success"}
