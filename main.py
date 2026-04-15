@@ -11,3 +11,7 @@ app.include_router(transfers.router)
 @app.get("/")
 def root():
     return {"status": "Clearance is live"}
+
+@app.get("/transfers")
+def get_transfers():
+    return {"message": "This endpoint will return all transfers."}
