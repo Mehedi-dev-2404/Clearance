@@ -14,13 +14,14 @@ def get_db():
 
 @router.post("/users")
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
-    existing_user = db.query(models.User).filter(models.User.username == user.username).first()
+    existing_user = db.query(models.User).filter(models.User.user_name == user.user_name
+).first()
     if existing_user:
         raise HTTPException(status_code=400, detail="Username already exists")
 
-    new_user = models.User(username=user.username, password_hash=user.password_hash)
+    new_user = models.User(user_name=user.user_name, email=user.email)
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
 
-    return {"user_id": new_user.user_id, "username": new_user.username}
+    return {"user_id": new_user.user_id, "username": new_user.user_name}
