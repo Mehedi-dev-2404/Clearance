@@ -14,8 +14,8 @@ def get_db():
 
 @router.post("/users")
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
-    existing_user = db.query(models.User).filter(models.User.user_name == user.user_name
-).first()
+    existing_user = db.query(models.User).filter(models.User.user_name == user.user_name).first()
+
     if existing_user:
         raise HTTPException(status_code=400, detail="Username already exists")
 
