@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from database import SessionLocal
 import models, schemas
 from risk import assess_risk
+from datetime import datetime
 
 router = APIRouter()
 
@@ -33,10 +34,11 @@ def transfer_funds(transfer: schemas.TransactionCreate, db: Session = Depends(ge
     receiver.balance += transfer.amount
 
     transaction = models.Transaction(
+        date_time = datetime.now(),
         from_account_id=transfer.from_account_id,
         to_account_id=transfer.to_account_id,
         amount=transfer.amount,
-        status="pending"
+        status="approved"
     )
     db.add(transaction)
     db.commit()
