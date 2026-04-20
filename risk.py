@@ -28,7 +28,7 @@ def assess_risk(sender_balance: int, receiver_balance: int, amount: int) -> dict
         max_tokens=256,
         messages=[{"role": "user", "content": prompt}]
     )
-
+    print(response.content[0].text)
     result = json.loads(response.content[0].text)
 
     return result 
