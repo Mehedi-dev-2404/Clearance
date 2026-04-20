@@ -2,7 +2,7 @@ import anthropic
 import os
 from dotenv import load_dotenv
 import json
-
+load_dotenv()
 def assess_risk(sender_balance: int, receiver_balance: int, amount: int) -> dict:
     client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))  
     prompt = f"""
@@ -16,11 +16,11 @@ def assess_risk(sender_balance: int, receiver_balance: int, amount: int) -> dict
     
     YOUR TASK: Analyse and give a score between 0-100 of the transfer based on the transaction details above.
     RESPONSE FORMAT: You must respond only in JSON with no extra text, no markdown, no backticks.Return exactly this JSON structure:
-        {
+        {{
             "risk_score": (0-100),
             "reasoning": "brief explanation",
             "decision": "approve" or "block"
-        }
+        }}
     """
 
     response = client.messages.create(
