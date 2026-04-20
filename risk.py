@@ -1,9 +1,10 @@
 import anthropic
+import os
+from dotenv import load_dotenv
 import json
 
 def assess_risk(sender_balance: int, receiver_balance: int, amount: int) -> dict:
-    client = anthropic.Anthropic(api_key="your-api-key")
-    
+    client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))  
     prompt = f"""
     You are a fraud detection engine.
     
@@ -30,4 +31,4 @@ def assess_risk(sender_balance: int, receiver_balance: int, amount: int) -> dict
 
     result = json.loads(response.content[0].text)
 
-    return result
+    return result 
