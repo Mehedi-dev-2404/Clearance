@@ -15,7 +15,7 @@ def assess_risk(sender_balance: int, receiver_balance: int, amount: int) -> dict
     - Percentage of balance being sent: {round(amount/sender_balance * 100, 2)}%
     
     YOUR TASK: Analyse and give a score between 0-100 of the transfer based on the transaction details above.
-    RESPONSE FORMAT: You must respond only in JSON with no extra text, no markdown, no backticks.Return exactly this JSON structure:
+    RESPONSE FORMAT: Respond with raw JSON only. Do NOT use markdown. Do NOT wrap in backticks or code fences. Output ONLY the JSON object, nothing else:
         {{
             "risk_score": (0-100),
             "reasoning": "brief explanation",
@@ -28,7 +28,12 @@ def assess_risk(sender_balance: int, receiver_balance: int, amount: int) -> dict
         max_tokens=256,
         messages=[{"role": "user", "content": prompt}]
     )
-    print(response.content[0].text)
-    result = json.loads(response.content[0].text)
+    raw = response.content[0].text.strip()
+    print(raw)
+    if raw.startswith("```"):
+        raw = raw.split("\n", 1)[-1]  
+        raw = raw.rsplit("```", 1)[0]
+        raw = raw.strip()
+    result = json.loads(raw)
 
     return result 
