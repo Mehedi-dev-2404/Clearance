@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from database import SessionLocal
 import models, schemas
+from risk import assess_risk
 
 router = APIRouter()
 
@@ -19,9 +20,14 @@ def transfer_funds(transfer: schemas.TransactionCreate, db: Session = Depends(ge
 
     if not sender or not receiver:
         raise HTTPException(status_code=404, detail="Sender or receiver account not found")
-
+    
     if sender.balance < transfer.amount:
-        raise HTTPException(status_code=400, detail="Insufficient funds")
+        raise HTTPException(status_code=400, detail="Insufficient funds")    
+    
+    risk = assess_risk(sender.balance, receiver.balance,transfer.amount)
+    
+    if risk["decision"] == "block":
+        raise HTTPException(status_code=400, detail="Transaction flagged please contact bank.")
 
     sender.balance -= transfer.amount
     receiver.balance += transfer.amount
