@@ -119,6 +119,7 @@ Create a user.
 }
 ```
 
+
 **Response**
 ```json
 {
